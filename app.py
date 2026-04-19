@@ -397,7 +397,8 @@ elif section == "Prediction Tool":
         number_emergency = st.slider("Emergency Visits", 0, 10, 0)
         number_diagnoses = st.slider("Number of Diagnoses", 1, 16, 5)
 
-   if st.button("Estimate Readmission Risk", use_container_width=True):
+# Estimate risk
+if st.button("Estimate Readmission Risk", use_container_width=True):
 
     score = (
         -3
@@ -411,18 +412,24 @@ elif section == "Prediction Tool":
     prob = 1 / (1 + np.exp(-score))
 
     # Determine risk level
-        if prob >= 0.60:
-            risk = "High Risk"
-            color = "#ef4444"
+    if prob >= 0.60:
+        risk = "High Risk"
+        color = "#ef4444"
 
-        elif prob >= 0.40:
-            risk = "Moderate Risk"
-            color = "#f59e0b"
+    elif prob >= 0.40:
+        risk = "Moderate Risk"
+        color = "#f59e0b"
 
-        else:
-            risk = "Low Risk"
-            color = "#16a34a"
+    else:
+        risk = "Low Risk"
+        color = "#16a34a"
 
+    with r1:
+        st.metric("Risk Probability", f"{prob:.3f}")
+        st.markdown(
+            f"### Risk Category: <span style='color:{color}'>{risk}</span>",
+            unsafe_allow_html=True
+        )
         with r1:
             st.metric("Risk Probability", f"{prob:.3f}")
             st.markdown(f"### Risk Category: <span style='color:{color}'>{risk}</span>", unsafe_allow_html=True)
