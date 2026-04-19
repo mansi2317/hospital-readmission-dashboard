@@ -31,20 +31,20 @@ st.markdown("""
 
     .hero {
         background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
-        padding: 24px 30px;
+        padding: 18px 24px;
         border-radius: 18px;
         color: white;
         margin-bottom: 22px;
     }
 
     .hero-title {
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 800;
-        margin-bottom: 0.35rem;
+        margin-bottom: 0.25rem;
     }
 
     .hero-subtitle {
-        font-size: 1rem;
+        font-size: 0.98rem;
         color: #dbeafe;
         margin: 0;
     }
@@ -52,7 +52,7 @@ st.markdown("""
     .card {
         background: white;
         border-radius: 16px;
-        padding: 18px 18px;
+        padding: 18px;
         box-shadow: 0 4px 14px rgba(15, 23, 42, 0.07);
         border: 1px solid #e5e7eb;
     }
@@ -61,7 +61,7 @@ st.markdown("""
         font-size: 1.25rem;
         font-weight: 700;
         color: #111827;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.35rem;
     }
 
     .section-sub {
@@ -101,6 +101,11 @@ st.markdown("""
         background-color: #1d4ed8;
         color: white;
     }
+
+    .stSelectbox label {
+        font-weight: 600;
+        color: #111827;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -117,7 +122,7 @@ df = load_data()
 sample_df = df.sample(n=min(8000, len(df)), random_state=42)
 
 # ==========================================
-# STATIC DATA
+# STATIC TABLES
 # ==========================================
 model_results_df = pd.DataFrame({
     "Model": ["Logistic Regression", "Random Forest", "XGBoost", "Naive Bayes"],
@@ -138,10 +143,16 @@ feature_importance_df = pd.DataFrame({
 # ==========================================
 # NAVIGATION
 # ==========================================
-section = st.radio(
-    "Navigation",
-    ["Overview", "EDA", "Model Performance", "Prediction Tool", "Feature Importance", "Methodology"],
-    horizontal=True
+section = st.selectbox(
+    "Select Section",
+    [
+        "Overview",
+        "EDA",
+        "Model Performance",
+        "Prediction Tool",
+        "Feature Importance",
+        "Methodology"
+    ]
 )
 
 # ==========================================
@@ -203,13 +214,27 @@ if section == "Overview":
         fig.update_layout(
             title="Readmission Distribution",
             height=460,
+            template="simple_white",
             plot_bgcolor="white",
             paper_bgcolor="white",
             showlegend=False,
             font=dict(color="#111827", size=14),
+            title_font=dict(color="#111827", size=20),
+            xaxis=dict(
+                title="Status",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                showgrid=False
+            ),
+            yaxis=dict(
+                title="Count",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                gridcolor="#d1d5db"
+            ),
             margin=dict(l=20, r=20, t=60, b=20)
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
     with right:
         st.markdown('<div class="card"><b style="color:#1d4ed8;">Business Objective</b><br><br>Identify high-risk diabetic patients likely to be readmitted within 30 days so hospitals can intervene earlier.</div>', unsafe_allow_html=True)
@@ -235,8 +260,27 @@ elif section == "EDA":
             title="Distribution of Time in Hospital",
             color_discrete_sequence=["#2563eb"]
         )
-        fig1.update_layout(height=400, plot_bgcolor="white", paper_bgcolor="white", font=dict(color="#111827"))
-        st.plotly_chart(fig1, use_container_width=True)
+        fig1.update_layout(
+            height=400,
+            template="simple_white",
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            font=dict(color="#111827", size=14),
+            title_font=dict(color="#111827", size=18),
+            xaxis=dict(
+                title="Time in Hospital",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                showgrid=False
+            ),
+            yaxis=dict(
+                title="Count",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                gridcolor="#d1d5db"
+            )
+        )
+        st.plotly_chart(fig1, use_container_width=True, config={"displayModeBar": False})
 
     with c2:
         fig2 = px.histogram(
@@ -246,8 +290,27 @@ elif section == "EDA":
             title="Distribution of Number of Medications",
             color_discrete_sequence=["#0f766e"]
         )
-        fig2.update_layout(height=400, plot_bgcolor="white", paper_bgcolor="white", font=dict(color="#111827"))
-        st.plotly_chart(fig2, use_container_width=True)
+        fig2.update_layout(
+            height=400,
+            template="simple_white",
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            font=dict(color="#111827", size=14),
+            title_font=dict(color="#111827", size=18),
+            xaxis=dict(
+                title="Number of Medications",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                showgrid=False
+            ),
+            yaxis=dict(
+                title="Count",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                gridcolor="#d1d5db"
+            )
+        )
+        st.plotly_chart(fig2, use_container_width=True, config={"displayModeBar": False})
 
     c3, c4 = st.columns(2)
 
@@ -261,8 +324,28 @@ elif section == "EDA":
             color_discrete_sequence=["#94a3b8", "#2563eb"]
         )
         fig3.update_xaxes(tickvals=[0, 1], ticktext=["Not Readmitted", "Readmitted"])
-        fig3.update_layout(height=400, showlegend=False, plot_bgcolor="white", paper_bgcolor="white", font=dict(color="#111827"))
-        st.plotly_chart(fig3, use_container_width=True)
+        fig3.update_layout(
+            height=400,
+            template="simple_white",
+            showlegend=False,
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            font=dict(color="#111827", size=14),
+            title_font=dict(color="#111827", size=18),
+            xaxis=dict(
+                title="Readmission Status",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                showgrid=False
+            ),
+            yaxis=dict(
+                title="Time in Hospital",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                gridcolor="#d1d5db"
+            )
+        )
+        st.plotly_chart(fig3, use_container_width=True, config={"displayModeBar": False})
 
     with c4:
         fig4 = px.box(
@@ -274,8 +357,28 @@ elif section == "EDA":
             color_discrete_sequence=["#94a3b8", "#2563eb"]
         )
         fig4.update_xaxes(tickvals=[0, 1], ticktext=["Not Readmitted", "Readmitted"])
-        fig4.update_layout(height=400, showlegend=False, plot_bgcolor="white", paper_bgcolor="white", font=dict(color="#111827"))
-        st.plotly_chart(fig4, use_container_width=True)
+        fig4.update_layout(
+            height=400,
+            template="simple_white",
+            showlegend=False,
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            font=dict(color="#111827", size=14),
+            title_font=dict(color="#111827", size=18),
+            xaxis=dict(
+                title="Readmission Status",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                showgrid=False
+            ),
+            yaxis=dict(
+                title="Number of Medications",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                gridcolor="#d1d5db"
+            )
+        )
+        st.plotly_chart(fig4, use_container_width=True, config={"displayModeBar": False})
 
     st.markdown("### Descriptive Statistics")
     numeric_cols = [
@@ -316,12 +419,26 @@ elif section == "Model Performance":
         fig.update_layout(
             title="AUC Comparison Across Models",
             height=430,
+            template="simple_white",
             plot_bgcolor="white",
             paper_bgcolor="white",
             showlegend=False,
-            font=dict(color="#111827")
+            font=dict(color="#111827", size=14),
+            title_font=dict(color="#111827", size=20),
+            xaxis=dict(
+                title="Model",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                showgrid=False
+            ),
+            yaxis=dict(
+                title="AUC Score",
+                title_font=dict(color="#111827", size=14),
+                tickfont=dict(color="#111827", size=13),
+                gridcolor="#d1d5db"
+            )
         )
-        st.plotly_chart(fig, use_container_width=True)
+        st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
     st.markdown('<div class="card">Among the evaluated models, <b>XGBoost</b> achieved the highest AUC and showed the strongest predictive performance.</div>', unsafe_allow_html=True)
 
@@ -387,8 +504,12 @@ elif section == "Prediction Tool":
                     ]
                 }
             ))
-            gauge.update_layout(height=320, paper_bgcolor="white", font=dict(color="#111827"))
-            st.plotly_chart(gauge, use_container_width=True)
+            gauge.update_layout(
+                height=320,
+                paper_bgcolor="white",
+                font=dict(color="#111827")
+            )
+            st.plotly_chart(gauge, use_container_width=True, config={"displayModeBar": False})
 
 # ==========================================
 # FEATURE IMPORTANCE
@@ -406,8 +527,28 @@ elif section == "Feature Importance":
         color_continuous_scale="Blues",
         title="Top Predictive Features"
     )
-    fig.update_layout(height=430, plot_bgcolor="white", paper_bgcolor="white", coloraxis_showscale=False, font=dict(color="#111827"))
-    st.plotly_chart(fig, use_container_width=True)
+    fig.update_layout(
+        height=430,
+        template="simple_white",
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        coloraxis_showscale=False,
+        font=dict(color="#111827", size=14),
+        title_font=dict(color="#111827", size=20),
+        xaxis=dict(
+            title="Importance",
+            title_font=dict(color="#111827", size=14),
+            tickfont=dict(color="#111827", size=13),
+            showgrid=False
+        ),
+        yaxis=dict(
+            title="Feature",
+            title_font=dict(color="#111827", size=14),
+            tickfont=dict(color="#111827", size=13),
+            gridcolor="#d1d5db"
+        )
+    )
+    st.plotly_chart(fig, use_container_width=True, config={"displayModeBar": False})
 
 # ==========================================
 # METHODOLOGY
