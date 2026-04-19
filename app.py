@@ -20,7 +20,7 @@ st.set_page_config(
 st.markdown("""
 <style>
     .stApp {
-        background: linear-gradient(180deg, #f8fbff 0%, #eef4ff 100%);
+        background-color: #ffffff;
     }
 
     .block-container {
@@ -30,92 +30,97 @@ st.markdown("""
     }
 
     .hero {
-        background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 45%, #0ea5e9 100%);
-        border-radius: 24px;
-        padding: 28px 32px;
+        background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 50%, #0ea5e9 100%);
+        border-radius: 20px;
+        padding: 26px 30px;
         color: white;
-        box-shadow: 0 10px 30px rgba(37, 99, 235, 0.25);
         margin-bottom: 18px;
     }
 
     .hero-title {
-        font-size: 2.2rem;
+        font-size: 2.1rem;
         font-weight: 800;
         margin-bottom: 0.35rem;
-        letter-spacing: -0.5px;
     }
 
     .hero-subtitle {
         font-size: 1rem;
-        color: #dbeafe;
+        color: #e5eefc;
         margin-bottom: 0;
         line-height: 1.6;
-    }
-
-    .section-card {
-        background: white;
-        padding: 18px 20px 16px 20px;
-        border-radius: 20px;
-        box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
-        margin-bottom: 18px;
     }
 
     .section-title {
         font-size: 1.25rem;
         font-weight: 700;
         color: #111827;
-        margin-bottom: 0.4rem;
+        margin-bottom: 0.35rem;
     }
 
     .section-desc {
-        color: #6b7280;
+        color: #4b5563;
         font-size: 0.95rem;
-        margin-bottom: 0.8rem;
+        margin-bottom: 1rem;
     }
 
     .insight-card {
-        background: linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+        background: #ffffff;
         border: 1px solid #dbeafe;
         padding: 18px;
-        border-radius: 18px;
-        box-shadow: 0 6px 18px rgba(59, 130, 246, 0.08);
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
         margin-bottom: 14px;
     }
 
     .insight-title {
         font-weight: 700;
         color: #1d4ed8;
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.35rem;
         font-size: 1rem;
     }
 
     .insight-text {
         color: #374151;
-        font-size: 0.94rem;
+        font-size: 0.95rem;
         line-height: 1.6;
     }
 
     [data-testid="stMetric"] {
-        background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
-        border: 1px solid #e5eefc;
+        background: #ffffff;
+        border: 1px solid #e5e7eb;
         padding: 16px 14px;
-        border-radius: 18px;
-        box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+        border-radius: 16px;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
     }
 
     [data-testid="stMetricLabel"] {
+        color: #6b7280;
         font-weight: 600;
-        color: #64748b;
     }
 
     [data-testid="stMetricValue"] {
-        color: #0f172a;
+        color: #111827;
         font-weight: 800;
     }
 
-    .small-note {
-        color: #64748b;
-        font-size: 0.9rem;
+    /* Sidebar */
+    section[data-testid="stSidebar"] {
+        background-color: #f8fafc;
+    }
+
+    /* Buttons */
+    .stButton > button {
+        background-color: #0f172a;
+        color: white;
+        border-radius: 10px;
+        border: none;
+        font-weight: 600;
+        padding: 0.6rem 1rem;
+    }
+
+    .stButton > button:hover {
+        background-color: #1d4ed8;
+        color: white;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -133,7 +138,7 @@ df = load_data()
 sample_df = df.sample(n=min(8000, len(df)), random_state=42)
 
 # ==========================================
-# STATIC TABLES / FEATURE IMPORTANCE
+# STATIC TABLES
 # ==========================================
 model_results_df = pd.DataFrame({
     "Model": ["Logistic Regression", "Random Forest", "XGBoost", "Naive Bayes"],
@@ -178,21 +183,17 @@ if "age" in sample_df.columns:
     sample_df = sample_df[sample_df["age"].astype(str).isin(selected_age)]
 
 # ==========================================
-# HERO HEADER
+# HERO
 # ==========================================
 st.markdown("""
 <div class="hero">
     <div class="hero-title">🏥 Hospital Readmission Analytics Dashboard</div>
     <p class="hero-subtitle">
-        Capstone project dashboard for analyzing and predicting 30-day hospital readmissions
-        among diabetic patients using machine learning and interactive business intelligence.
+        Capstone project dashboard for analyzing and predicting 30-day hospital readmissions among diabetic patients.
     </p>
 </div>
 """, unsafe_allow_html=True)
 
-# ==========================================
-# COMMON METRICS
-# ==========================================
 total_patients = len(df)
 readmitted_count = int(df["readmitted"].sum())
 not_readmitted_count = total_patients - readmitted_count
@@ -203,7 +204,7 @@ readmit_rate = round((readmitted_count / total_patients) * 100, 2)
 # ==========================================
 if section == "Executive Overview":
     st.markdown('<div class="section-title">Executive Overview</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-desc">A high-level summary of the final capstone dataset, readmission patterns, and business relevance.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-desc">High-level summary of the dataset and readmission patterns.</div>', unsafe_allow_html=True)
 
     c1, c2, c3, c4 = st.columns(4)
     c1.metric("Total Patients", f"{total_patients:,}")
@@ -211,70 +212,71 @@ if section == "Executive Overview":
     c3.metric("Not Readmitted", f"{not_readmitted_count:,}")
     c4.metric("Readmission Rate", f"{readmit_rate}%")
 
-    st.markdown("")
-
     left, right = st.columns([1.35, 1])
 
     with left:
-        with st.container():
-            readmit_df = (
-                sample_df["readmitted"]
-                .value_counts()
-                .sort_index()
-                .rename(index={0: "Not Readmitted", 1: "Readmitted"})
-                .reset_index()
-            )
-            readmit_df.columns = ["Status", "Count"]
+        readmit_df = (
+            sample_df["readmitted"]
+            .value_counts()
+            .sort_index()
+            .rename(index={0: "Not Readmitted", 1: "Readmitted"})
+            .reset_index()
+        )
+        readmit_df.columns = ["Status", "Count"]
 
-            fig = px.bar(
-                readmit_df,
-                x="Status",
-                y="Count",
-                text="Count",
-                color="Status",
-                color_discrete_map={
-                    "Not Readmitted": "#2563eb",
-                    "Readmitted": "#ef4444"
-                }
-            )
-            fig.update_traces(textposition="outside")
-            fig.update_layout(
-                title="Readmission Distribution",
-                height=450,
-                showlegend=False,
-                plot_bgcolor="white",
-                paper_bgcolor="white",
-                margin=dict(l=20, r=20, t=60, b=20)
-            )
-            st.plotly_chart(fig, use_container_width=True)
+        fig = px.bar(
+            readmit_df,
+            x="Status",
+            y="Count",
+            text="Count",
+            color="Status",
+            color_discrete_map={
+                "Not Readmitted": "#2563eb",
+                "Readmitted": "#ef4444"
+            }
+        )
+        fig.update_traces(
+            textposition="outside",
+            textfont=dict(color="#111827", size=14)
+        )
+        fig.update_layout(
+            title="Readmission Distribution",
+            title_font=dict(color="#111827", size=20),
+            height=450,
+            showlegend=False,
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            font=dict(color="#111827", size=14),
+            xaxis=dict(title_font=dict(color="#111827"), tickfont=dict(color="#111827")),
+            yaxis=dict(title_font=dict(color="#111827"), tickfont=dict(color="#111827")),
+            margin=dict(l=20, r=20, t=60, b=20)
+        )
+        st.plotly_chart(fig, use_container_width=True)
 
     with right:
         st.markdown("""
         <div class="insight-card">
             <div class="insight-title">Business Objective</div>
             <div class="insight-text">
-                Identify diabetic patients who are most likely to be readmitted within 30 days
-                so hospitals can take preventive actions before discharge.
+                Identify high-risk diabetic patients likely to be readmitted within 30 days so hospitals can intervene earlier.
             </div>
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown("""
         <div class="insight-card">
-            <div class="insight-title">Operational Importance</div>
+            <div class="insight-title">Operational Value</div>
             <div class="insight-text">
-                Predicting high-risk patients helps improve follow-up care, discharge planning,
-                and resource allocation across hospital systems.
+                Supports discharge planning, follow-up care, and more efficient healthcare resource allocation.
             </div>
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown("""
         <div class="insight-card">
-            <div class="insight-title">Analytical Insight</div>
+            <div class="insight-title">Analytical Note</div>
             <div class="insight-text">
-                The dataset is strongly imbalanced, which makes AUC, Recall, and F1-score
-                more meaningful than accuracy alone.
+                Because the dataset is imbalanced, AUC, Recall, and F1-score are more informative than accuracy alone.
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -284,7 +286,7 @@ if section == "Executive Overview":
 # ==========================================
 elif section == "Exploratory Analysis":
     st.markdown('<div class="section-title">Exploratory Data Analysis</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-desc">Interactive visual analysis of patient stay duration, medication intensity, and readmission-related patterns.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-desc">Visual analysis of hospital stay duration, medication usage, and readmission-related patterns.</div>', unsafe_allow_html=True)
 
     row1_col1, row1_col2 = st.columns(2)
 
@@ -296,7 +298,15 @@ elif section == "Exploratory Analysis":
             title="Distribution of Time in Hospital",
             color_discrete_sequence=["#2563eb"]
         )
-        fig1.update_layout(height=400, plot_bgcolor="white", paper_bgcolor="white")
+        fig1.update_layout(
+            height=400,
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            font=dict(color="#111827"),
+            title_font=dict(color="#111827"),
+            xaxis=dict(title_font=dict(color="#111827"), tickfont=dict(color="#111827")),
+            yaxis=dict(title_font=dict(color="#111827"), tickfont=dict(color="#111827"))
+        )
         st.plotly_chart(fig1, use_container_width=True)
 
     with row1_col2:
@@ -307,7 +317,15 @@ elif section == "Exploratory Analysis":
             title="Distribution of Number of Medications",
             color_discrete_sequence=["#0f766e"]
         )
-        fig2.update_layout(height=400, plot_bgcolor="white", paper_bgcolor="white")
+        fig2.update_layout(
+            height=400,
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            font=dict(color="#111827"),
+            title_font=dict(color="#111827"),
+            xaxis=dict(title_font=dict(color="#111827"), tickfont=dict(color="#111827")),
+            yaxis=dict(title_font=dict(color="#111827"), tickfont=dict(color="#111827"))
+        )
         st.plotly_chart(fig2, use_container_width=True)
 
     row2_col1, row2_col2 = st.columns(2)
@@ -321,8 +339,18 @@ elif section == "Exploratory Analysis":
             title="Time in Hospital by Readmission Status",
             color_discrete_sequence=["#2563eb", "#ef4444"]
         )
-        fig3.update_xaxes(tickvals=[0, 1], ticktext=["Not Readmitted", "Readmitted"])
-        fig3.update_layout(height=400, plot_bgcolor="white", paper_bgcolor="white", showlegend=False)
+        fig3.update_xaxes(
+            tickvals=[0, 1],
+            ticktext=["Not Readmitted", "Readmitted"]
+        )
+        fig3.update_layout(
+            height=400,
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            showlegend=False,
+            font=dict(color="#111827"),
+            title_font=dict(color="#111827")
+        )
         st.plotly_chart(fig3, use_container_width=True)
 
     with row2_col2:
@@ -334,8 +362,18 @@ elif section == "Exploratory Analysis":
             title="Number of Medications by Readmission Status",
             color_discrete_sequence=["#2563eb", "#ef4444"]
         )
-        fig4.update_xaxes(tickvals=[0, 1], ticktext=["Not Readmitted", "Readmitted"])
-        fig4.update_layout(height=400, plot_bgcolor="white", paper_bgcolor="white", showlegend=False)
+        fig4.update_xaxes(
+            tickvals=[0, 1],
+            ticktext=["Not Readmitted", "Readmitted"]
+        )
+        fig4.update_layout(
+            height=400,
+            plot_bgcolor="white",
+            paper_bgcolor="white",
+            showlegend=False,
+            font=dict(color="#111827"),
+            title_font=dict(color="#111827")
+        )
         st.plotly_chart(fig4, use_container_width=True)
 
     st.markdown("### Summary Statistics")
@@ -353,19 +391,12 @@ elif section == "Exploratory Analysis":
     summary_stats = df[numeric_cols].describe().round(2)
     st.dataframe(summary_stats, use_container_width=True)
 
-    st.download_button(
-        "Download Summary Statistics",
-        data=summary_stats.to_csv().encode("utf-8"),
-        file_name="summary_statistics.csv",
-        mime="text/csv"
-    )
-
 # ==========================================
 # MODEL PERFORMANCE
 # ==========================================
 elif section == "Model Performance":
     st.markdown('<div class="section-title">Model Performance Comparison</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-desc">Comparison of predictive models used in the capstone project based on AUC performance.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-desc">Comparison of predictive models used in the capstone project.</div>', unsafe_allow_html=True)
 
     left, right = st.columns([1, 1.45])
 
@@ -386,10 +417,15 @@ elif section == "Model Performance":
             },
             title="AUC Comparison Across Models"
         )
+        fig.update_traces(textposition="outside", textfont=dict(color="#111827", size=13))
         fig.update_layout(
             height=450,
             plot_bgcolor="white",
-            paper_bgcolor="white"
+            paper_bgcolor="white",
+            font=dict(color="#111827"),
+            title_font=dict(color="#111827"),
+            xaxis=dict(title_font=dict(color="#111827"), tickfont=dict(color="#111827")),
+            yaxis=dict(title_font=dict(color="#111827"), tickfont=dict(color="#111827"))
         )
         st.plotly_chart(fig, use_container_width=True)
 
@@ -397,8 +433,7 @@ elif section == "Model Performance":
     <div class="insight-card">
         <div class="insight-title">Interpretation</div>
         <div class="insight-text">
-            XGBoost achieved the highest AUC and therefore demonstrated the strongest predictive
-            ability among the tested models for distinguishing readmitted patients from non-readmitted patients.
+            XGBoost achieved the highest AUC and therefore showed the strongest predictive ability among the tested models.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -408,7 +443,7 @@ elif section == "Model Performance":
 # ==========================================
 elif section == "Risk Prediction Tool":
     st.markdown('<div class="section-title">Readmission Risk Estimator</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-desc">Interactive patient-level risk estimation tool based on major utilization and clinical indicators.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-desc">Interactive estimator based on patient utilization and diagnosis indicators.</div>', unsafe_allow_html=True)
 
     c1, c2 = st.columns(2)
 
@@ -447,15 +482,20 @@ elif section == "Risk Prediction Tool":
         with left:
             st.metric("Risk Probability", f"{prob:.3f}")
             st.markdown(f"### Risk Category: <span style='color:{color}'>{risk}</span>", unsafe_allow_html=True)
-            st.caption("This is a simplified dashboard-based estimator for demonstration purposes.")
+            st.caption("This is a simplified estimator for dashboard demonstration purposes.")
 
         with right:
             gauge = go.Figure(go.Indicator(
                 mode="gauge+number",
                 value=prob * 100,
-                title={"text": "Estimated Risk Score"},
+                title={"text": "Estimated Risk Score", "font": {"color": "#111827", "size": 22}},
+                number={"font": {"color": "#111827", "size": 64}},
                 gauge={
-                    "axis": {"range": [0, 100]},
+                    "axis": {
+                        "range": [0, 100],
+                        "tickcolor": "#111827",
+                        "tickfont": {"color": "#111827"}
+                    },
                     "bar": {"color": color},
                     "steps": [
                         {"range": [0, 40], "color": "#dcfce7"},
@@ -464,7 +504,7 @@ elif section == "Risk Prediction Tool":
                     ]
                 }
             ))
-            gauge.update_layout(height=340, paper_bgcolor="white")
+            gauge.update_layout(height=340, paper_bgcolor="white", font=dict(color="#111827"))
             st.plotly_chart(gauge, use_container_width=True)
 
 # ==========================================
@@ -472,7 +512,7 @@ elif section == "Risk Prediction Tool":
 # ==========================================
 elif section == "Feature Importance":
     st.markdown('<div class="section-title">Feature Importance Analysis</div>', unsafe_allow_html=True)
-    st.markdown('<div class="section-desc">Key variables contributing to readmission risk according to the final modeling workflow.</div>', unsafe_allow_html=True)
+    st.markdown('<div class="section-desc">Top variables contributing to readmission risk.</div>', unsafe_allow_html=True)
 
     fig = px.bar(
         feature_importance_df.sort_values("Importance"),
@@ -483,15 +523,21 @@ elif section == "Feature Importance":
         color_continuous_scale="Blues",
         title="Top Predictive Features"
     )
-    fig.update_layout(height=450, plot_bgcolor="white", paper_bgcolor="white", coloraxis_showscale=False)
+    fig.update_layout(
+        height=450,
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        coloraxis_showscale=False,
+        font=dict(color="#111827"),
+        title_font=dict(color="#111827")
+    )
     st.plotly_chart(fig, use_container_width=True)
 
     st.markdown("""
     <div class="insight-card">
         <div class="insight-title">Feature Insight</div>
         <div class="insight-text">
-            Prior inpatient visits, medication burden, hospital stay duration, and emergency utilization
-            appear to be strong indicators of readmission risk, reflecting both clinical complexity and prior healthcare usage.
+            Prior inpatient visits, medication burden, hospital stay duration, and emergency utilization are strong indicators of readmission risk.
         </div>
     </div>
     """, unsafe_allow_html=True)
@@ -504,15 +550,17 @@ elif section == "Project Methodology":
     st.markdown('<div class="section-desc">Summary of the analytics workflow used in the capstone project.</div>', unsafe_allow_html=True)
 
     st.markdown("""
-    <div class="section-card">
-        <b>Workflow Used:</b><br><br>
-        1. Data cleaning and preprocessing<br>
-        2. Missing value treatment and outlier handling<br>
-        3. Exploratory data analysis<br>
-        4. Training and testing split for validation<br>
-        5. Predictive modeling using Logistic Regression, Random Forest, XGBoost, and Naive Bayes<br>
-        6. Model evaluation using Accuracy, Precision, Recall, F1-score, and AUC<br>
-        7. Interpretation of results and business implications
+    <div class="insight-card">
+        <div class="insight-title">Workflow Used</div>
+        <div class="insight-text">
+            1. Data cleaning and preprocessing<br>
+            2. Missing value treatment and outlier handling<br>
+            3. Exploratory data analysis<br>
+            4. Train/test split for validation<br>
+            5. Predictive modeling using Logistic Regression, Random Forest, XGBoost, and Naive Bayes<br>
+            6. Model evaluation using Accuracy, Precision, Recall, F1-score, and AUC<br>
+            7. Interpretation of business implications
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
@@ -520,8 +568,7 @@ elif section == "Project Methodology":
     <div class="insight-card">
         <div class="insight-title">Validation Approach</div>
         <div class="insight-text">
-            The predictive models were validated using an 80/20 train-test split. Because the dataset is imbalanced,
-            AUC, Recall, and F1-score were emphasized as the most informative performance criteria.
+            Models were validated using an 80/20 train-test split. Because the dataset is imbalanced, AUC, Recall, and F1-score were emphasized over accuracy alone.
         </div>
     </div>
     """, unsafe_allow_html=True)
