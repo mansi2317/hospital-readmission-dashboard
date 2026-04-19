@@ -397,30 +397,31 @@ elif section == "Prediction Tool":
         number_emergency = st.slider("Emergency Visits", 0, 10, 0)
         number_diagnoses = st.slider("Number of Diagnoses", 1, 16, 5)
 
-    if st.button("Estimate Readmission Risk", use_container_width=True):
-        score = (
-    -3 +
-    0.20 * time_in_hospital +
-    0.05 * num_medications +
-    0.60 * number_inpatient +
-    0.40 * number_emergency +
-    0.10 * number_diagnoses
-)
+   if st.button("Estimate Readmission Risk", use_container_width=True):
 
-prob = 1 / (1 + np.exp(-score))
+    score = (
+        -3
+        + 0.20 * time_in_hospital
+        + 0.05 * num_medications
+        + 0.60 * number_inpatient
+        + 0.40 * number_emergency
+        + 0.10 * number_diagnoses
+    )
 
-       
+    prob = 1 / (1 + np.exp(-score))
+
+    # Determine risk level
         if prob >= 0.60:
             risk = "High Risk"
             color = "#ef4444"
+
         elif prob >= 0.40:
             risk = "Moderate Risk"
             color = "#f59e0b"
+
         else:
             risk = "Low Risk"
             color = "#16a34a"
-
-        r1, r2 = st.columns([0.9, 1.1])
 
         with r1:
             st.metric("Risk Probability", f"{prob:.3f}")
