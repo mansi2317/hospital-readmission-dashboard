@@ -159,8 +159,7 @@ section = st.sidebar.selectbox(
         "EDA",
         "Model Performance",
         "Prediction Tool",
-        "Feature Importance",
-        "Methodology"
+        "Feature Importance"
     ]
 )
 
@@ -400,15 +399,17 @@ elif section == "Prediction Tool":
 
     if st.button("Estimate Readmission Risk", use_container_width=True):
         score = (
-            0.10 * time_in_hospital +
-            0.10 * num_medications +
-            0.30 * number_inpatient +
-            0.20 * number_emergency +
-            0.10 * number_diagnoses
-        )
+    -3 +
+    0.20 * time_in_hospital +
+    0.05 * num_medications +
+    0.60 * number_inpatient +
+    0.40 * number_emergency +
+    0.10 * number_diagnoses
+)
 
-        prob = 1 / (1 + np.exp(-score / 10))
+prob = 1 / (1 + np.exp(-score))
 
+       
         if prob >= 0.60:
             risk = "High Risk"
             color = "#ef4444"
@@ -478,22 +479,3 @@ elif section == "Feature Importance":
     fig.update_layout(coloraxis_showscale=False)
     show_plot(fig)
 
-# =========================================================
-# METHODOLOGY
-# =========================================================
-elif section == "Methodology":
-    st.subheader("Project Methodology")
-    st.caption("Summary of the analytics workflow used in the capstone project.")
-
-    st.markdown("""
-    <div class="card">
-        <b>Workflow Used</b><br><br>
-        1. Data cleaning and preprocessing<br>
-        2. Missing value treatment and outlier handling<br>
-        3. Exploratory data analysis<br>
-        4. Train/test split for validation<br>
-        5. Predictive modeling using Logistic Regression, Random Forest, XGBoost, and Naive Bayes<br>
-        6. Model evaluation using Accuracy, Precision, Recall, F1-score, and AUC<br>
-        7. Interpretation of business implications
-    </div>
-    """, unsafe_allow_html=True)
