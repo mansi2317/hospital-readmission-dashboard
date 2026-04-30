@@ -404,10 +404,10 @@ elif section == "Prediction Tool":
         score = (
             -3
             + 0.20 * time_in_hospital
-            + 0.05 * num_medications
+            + 0.15 * num_medications
             + 0.60 * number_inpatient
-            + 0.40 * number_emergency
-            + 0.10 * number_diagnoses
+            + 0.50 * number_emergency
+            + 0.20 * number_diagnoses
         )
 
         prob = 1 / (1 + np.exp(-score))
