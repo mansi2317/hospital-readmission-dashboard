@@ -404,8 +404,8 @@ elif section == "Prediction Tool":
         score = (
             -3
             + 0.20 * time_in_hospital
-            + 0.15 * num_medications
-            + 0.60 * number_inpatient
+            + 0.10 * num_medications
+            + 0.50 * number_inpatient
             + 0.50 * number_emergency
             + 0.20 * number_diagnoses
         )
